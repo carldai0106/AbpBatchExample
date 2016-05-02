@@ -1,0 +1,10 @@
+/*/*/bin
+/*/*/obj
+/*/obj
+/*/bin
+/packages
+/packages/*
+/EntityFramework.Extended
+/EntityFramework.Utilities
+/EntityFramework.Extended/*
+/EntityFramework.Utilities/*
