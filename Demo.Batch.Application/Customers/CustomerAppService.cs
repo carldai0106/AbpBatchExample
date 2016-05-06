@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using Abp.Domain.Uow;
 using Abp.EntityFramework.Repositories;
 using Demo.Batch.Application.Customers.Dto;
 using Demo.Batch.Customers;
@@ -50,6 +48,10 @@ namespace Demo.Batch.Application.Customers
 
         public async Task BatchDelete()
         {
+            var list = new List<long> {1, 2, 3, 4, 5, 6};
+
+            await _repository.BatchDeleteAsync(x => list.Contains(x.Id));
+
             await _repository.BatchDeleteAsync(x => x.Age >= 55 && x.TenantId == 1 && x.IsDeleted == false);
         }
 

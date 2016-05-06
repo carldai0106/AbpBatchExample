@@ -133,6 +133,7 @@
     <Compile Include="BatchTestModule.cs" />
     <Compile Include="Customers\CustomerAppService_Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Readme.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
