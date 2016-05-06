@@ -103,7 +103,6 @@
   <ItemGroup>
     <Compile Include="EntityFramework\AbpEntityFrameworkExModule.cs" />
     <Compile Include="EntityFramework\Batch\AbpSqlServerBatchRunner.cs" />
-    <Compile Include="EntityFramework\Batch\BatchExtensions.cs" />
     <Compile Include="EntityFramework\Batch\IAbpBatchRunner.cs" />
     <Compile Include="EntityFramework\Extensions\IndexingExtensions.cs" />
     <Compile Include="EntityFramework\Extensions\IndexOptions.cs" />

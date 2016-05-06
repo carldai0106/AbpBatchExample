@@ -8,3 +8,4 @@
 /EntityFramework.Utilities
 /EntityFramework.Extended/*
 /EntityFramework.Utilities/*
+*.suo
