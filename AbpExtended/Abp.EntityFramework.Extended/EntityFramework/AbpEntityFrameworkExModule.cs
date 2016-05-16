@@ -18,18 +18,15 @@ namespace Abp.EntityFramework
             _typeFinder = typeFinder;
         }
 
-        public override void PreInitialize()
-        {
-            RegisterGenericRepositories();
-            base.PreInitialize();
-           
-        }
-
         public override void Initialize()
         {
-           
-            IocManager.RegisterAssemblyByConvention(Assembly.GetExecutingAssembly());            
+            IocManager.RegisterAssemblyByConvention(Assembly.GetExecutingAssembly());
         }
+
+        //public override void PostInitialize()
+        //{
+        //    RegisterGenericRepositories();
+        //}
 
         private void RegisterGenericRepositories()
         {
@@ -53,9 +50,6 @@ namespace Abp.EntityFramework
                 var type = typeof(IAbpBatchRunner<>).MakeGenericType(item);
                 var implType = typeof(AbpSqlServerBatchRunner<>).MakeGenericType(item);
                 IocManager.RegisterIfNot(type, implType, DependencyLifeStyle.Transient);
-
-                var flag = IocManager.IsRegistered(type);
-                //throw new Exception(flag.ToString() + " 111");
             }            
         }
     }

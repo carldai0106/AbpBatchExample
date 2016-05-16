@@ -35,12 +35,12 @@ namespace Demo.Batch.Tests
 
         protected override void PreInitialize()
         {
-            var authConnection = DbConnectionFactory.CreateTransient();
-            if (!LocalIocManager.IsRegistered<IBatchDataModuleConfiguration>())
-            {
-                LocalIocManager.Register<IBatchDataModuleConfiguration, BatchDataModuleConfiguration>();
-                Resolve<IBatchDataModuleConfiguration>().Connection = authConnection;
-            }
+            //var authConnection = DbConnectionFactory.CreateTransient();
+            //if (!LocalIocManager.IsRegistered<IBatchDataModuleConfiguration>())
+            //{
+            //    LocalIocManager.Register<IBatchDataModuleConfiguration, BatchDataModuleConfiguration>();
+            //    Resolve<IBatchDataModuleConfiguration>().Connection = authConnection;
+            //}
         }
 
         protected override void AddModules(ITypeList<AbpModule> modules)

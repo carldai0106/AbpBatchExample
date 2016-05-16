@@ -11,10 +11,10 @@ namespace Abp.EntityFramework.Repositories
         IRepository<TEntity, TPrimaryKey> where TEntity : 
         class, IEntity<TPrimaryKey>
     {
-        Task BatchInsertAsync(IEnumerable<TEntity> entities);       
+        Task<IEnumerable<TEntity>> BatchInsertAsync(IEnumerable<TEntity> entities);       
 
-        Task BatchUpdateAsync(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, TEntity>> updateExpression);
+        Task<int> BatchUpdateAsync(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, TEntity>> updateExpression);
 
-        Task BatchDeleteAsync(Expression<Func<TEntity, bool>> predicate);
+        Task<int> BatchDeleteAsync(Expression<Func<TEntity, bool>> predicate);
     }
 }
