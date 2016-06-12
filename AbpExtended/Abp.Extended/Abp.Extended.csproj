@@ -108,16 +108,23 @@
     <Compile Include="Configuration\IAbpExtendedConfiguration.cs" />
     <Compile Include="Configuration\Startup\AbpExtendedConfigurationExtensions.cs" />
     <Compile Include="DebugHelper.cs" />
+    <Compile Include="DisposableObject.cs" />
     <Compile Include="Domain\Entities\Auditing\FullAuditedAndTenantEntity.cs" />
     <Compile Include="Domain\Entities\Auditing\FullAuditedAndTenantEntityOfType.cs" />
+    <Compile Include="Domain\Repositories\IBatchRepositoryOfTEntity.cs" />
+    <Compile Include="Domain\Repositories\IBatchRepositoryOfTEntityAndTPrimaryKey.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Localization\LocalizedHelper.cs" />
-    <Compile Include="Net\Mail\RabbitMQ\EmailMessage.cs" />
-    <Compile Include="Net\Mail\RabbitMQ\IRabbitMQEmailListener.cs" />
-    <Compile Include="Net\Mail\RabbitMQ\IRabbitMQEmailPublisher.cs" />
-    <Compile Include="Net\Mail\RabbitMQ\RabbitMQEmailListener.cs" />
-    <Compile Include="Net\Mail\RabbitMQ\RabbitMQEmailPublisher.cs" />
+    <Compile Include="Messaging\IMessageArgs.cs" />
+    <Compile Include="Messaging\IMessageExecutor.cs" />
+    <Compile Include="Messaging\IMessagePublisher.cs" />
+    <Compile Include="Messaging\IMessageSubscriber.cs" />
+    <Compile Include="Messaging\MessageReceivedEventArgs.cs" />
+    <Compile Include="Messaging\RabbitMq\MessageArgs.cs" />
+    <Compile Include="Messaging\RabbitMq\RabbitMqCfg.cs" />
+    <Compile Include="Messaging\RabbitMq\RabbitMqPublisher.cs" />
+    <Compile Include="Messaging\RabbitMq\RabbitMqSubscriber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\Extensions\AssignableExtensions.cs" />
     <Compile Include="Runtime\DataAnnotations\DataAnnotationLocalization.cs" />
@@ -131,6 +138,7 @@
     <Compile Include="Runtime\DataAnnotations\LocalizedStringLength.cs" />
     <Compile Include="Runtime\Security\Md5Cipher.cs" />
     <Compile Include="Runtime\Security\SimpleStringCipher.cs" />
+    <Compile Include="Text\RegularExpressions\RegexUtils.cs" />
     <Compile Include="Utils\Dynamic\DynamicDictionary.cs" />
   </ItemGroup>
   <ItemGroup>

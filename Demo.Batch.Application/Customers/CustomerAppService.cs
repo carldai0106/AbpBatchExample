@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using Abp.EntityFramework.Repositories;
+using Abp.Domain.Repositories;
 using Demo.Batch.Application.Customers.Dto;
 using Demo.Batch.Customers;
 
@@ -11,14 +11,20 @@ namespace Demo.Batch.Application.Customers
     public class CustomerAppService : BatchAppServiceBase, ICustomerAppService
     {
         private readonly IBatchRepository<Customer, long> _repository;
-        public CustomerAppService(IBatchRepository<Customer, long> repository)
+        private CustomerManager _mananger;
+        public CustomerAppService(
+            CustomerManager mananger,
+            IBatchRepository<Customer, long> repository)
         {
+            _mananger = mananger;
             _repository = repository;
         }
 
         public async Task<ListResultOutput<CustomerListDto>> GetCustomers()
         {
             var list = await _repository.GetAllListAsync();
+
+            await _mananger.GetCustomers();
 
             return new ListResultOutput<CustomerListDto>(list.MapTo<List<CustomerListDto>>());
         }
@@ -43,12 +49,16 @@ namespace Demo.Batch.Application.Customers
                 }
             };
 
+            await _mananger.CreateOrUpdateCustomer(list);
+
             await _repository.BatchInsertAsync(list);
         }
 
         public async Task BatchDelete()
         {
             var list = new List<long> {1, 2, 3, 4, 5, 6};
+
+            await _mananger.BatchDelete(list);
 
             await _repository.BatchDeleteAsync(x => list.Contains(x.Id));
 
@@ -57,6 +67,8 @@ namespace Demo.Batch.Application.Customers
 
         public async Task BatchUpdate()
         {
+            await _mananger.BatchUpdate();
+
             await _repository.BatchUpdateAsync(x => x.Age < 30, x2 => new Customer {
                 Age = x2.Age + 10
             });

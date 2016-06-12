@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-
 //from http://stackoverflow.com/questions/457676/check-if-a-class-is-derived-from-a-generic-class
-
 namespace Abp.Reflection.Extensions
 {
     /// <summary>

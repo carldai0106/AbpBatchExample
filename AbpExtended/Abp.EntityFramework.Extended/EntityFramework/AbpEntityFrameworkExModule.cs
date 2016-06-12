@@ -1,10 +1,8 @@
 ﻿using System.Reflection;
 using Abp.Collections.Extensions;
+using Abp.EntityFramework.Repositories;
 using Abp.Modules;
-using Abp.Dependency;
-using Abp.EntityFramework.Batch;
 using Abp.Reflection;
-using System;
 
 namespace Abp.EntityFramework
 {
@@ -21,12 +19,9 @@ namespace Abp.EntityFramework
         public override void Initialize()
         {
             IocManager.RegisterAssemblyByConvention(Assembly.GetExecutingAssembly());
+            
+            RegisterGenericRepositories();
         }
-
-        //public override void PostInitialize()
-        //{
-        //    RegisterGenericRepositories();
-        //}
 
         private void RegisterGenericRepositories()
         {
@@ -43,14 +38,14 @@ namespace Abp.EntityFramework
                 return;
             }
 
-            for (var i = 0; i < dbContextTypes.Length; i++)
+            foreach (var item in dbContextTypes)
             {
-                var item = dbContextTypes[i];
+                EntityFrameworkGenericBatchRepositoryRegistrar.RegisterForDbContext(item, IocManager);
 
-                var type = typeof(IAbpBatchRunner<>).MakeGenericType(item);
-                var implType = typeof(AbpSqlServerBatchRunner<>).MakeGenericType(item);
-                IocManager.RegisterIfNot(type, implType, DependencyLifeStyle.Transient);
-            }            
+                //var type = typeof(IAbpBatchRunner<>).MakeGenericType(item);
+                //var implType = typeof(AbpSqlServerBatchRunner<>).MakeGenericType(item);
+                //IocManager.RegisterIfNot(type, implType, DependencyLifeStyle.Transient);
+            }
         }
     }
 }

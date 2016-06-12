@@ -32,6 +32,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  
   <ItemGroup>
     <Reference Include="Abp, Version=0.8.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Abp.0.8.3.0\lib\net452\Abp.dll</HintPath>

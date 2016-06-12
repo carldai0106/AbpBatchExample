@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Abp.Dependency;
 using Abp.Domain.Entities;
+using Abp.Domain.Repositories;
 using Abp.EntityFramework.Batch;
 using Abp.Reflection.Extensions;
 using EntityFramework.Extensions;
@@ -19,7 +20,7 @@ namespace Abp.EntityFramework.Repositories
         where TEntity : class, IEntity<TPrimaryKey>
         where TDbContext : DbContext
     {
-        protected BatchEfRepositoryBase(
+        public BatchEfRepositoryBase(
             IDbContextProvider<TDbContext> dbContextProvider)
             : base(dbContextProvider)
         {

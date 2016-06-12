@@ -1,7 +1,6 @@
-﻿
-using Abp.Domain.Entities;
+﻿using Abp.Domain.Entities;
 
-namespace Abp.EntityFramework.Repositories
+namespace Abp.Domain.Repositories
 {
     public interface IBatchRepository<TEntity> : 
         IBatchRepository<TEntity, int> where TEntity : 

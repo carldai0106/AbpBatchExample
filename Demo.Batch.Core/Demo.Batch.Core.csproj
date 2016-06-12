@@ -78,7 +78,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BatchCoreModule.cs" />
+    <Compile Include="BatchDomainService.cs" />
     <Compile Include="Customers\Customer.cs" />
+    <Compile Include="Customers\CustomerManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

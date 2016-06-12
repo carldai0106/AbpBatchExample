@@ -1,5 +1,6 @@
 ﻿using System.Data.Entity;
 using Abp.Domain.Entities;
+using Abp.Domain.Repositories;
 
 namespace Abp.EntityFramework.Repositories
 {

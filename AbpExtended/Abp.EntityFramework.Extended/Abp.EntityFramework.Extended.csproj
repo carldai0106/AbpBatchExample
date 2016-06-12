@@ -100,12 +100,13 @@
     <Compile Include="EntityFramework\AbpEntityFrameworkExModule.cs" />
     <Compile Include="EntityFramework\Batch\AbpSqlServerBatchRunner.cs" />
     <Compile Include="EntityFramework\Batch\IAbpBatchRunner.cs" />
+    <Compile Include="EntityFramework\Extensions\DbContextExtensions.cs" />
     <Compile Include="EntityFramework\Extensions\IndexingExtensions.cs" />
     <Compile Include="EntityFramework\Extensions\IndexOptions.cs" />
+    <Compile Include="EntityFramework\Repositories\AutoBatchRepositoryTypesAttribute.cs" />
     <Compile Include="EntityFramework\Repositories\BatchEfRepositoryBaseOfTEntity.cs" />
     <Compile Include="EntityFramework\Repositories\BatchEfRepositoryBaseOfTEntityAndTPrimaryKey.cs" />
-    <Compile Include="EntityFramework\Repositories\IBatchRepositoryOfTEntity.cs" />
-    <Compile Include="EntityFramework\Repositories\IBatchRepositoryOfTEntityAndTPrimaryKey.cs" />
+    <Compile Include="EntityFramework\Repositories\EntityFrameworkGenericBatchRepositoryRegistrar.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -114,11 +115,10 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Abp.Extended\Abp.Extended.csproj">
-      <Project>{10A545BA-750F-423A-96B5-07C8D831C285}</Project>
+      <Project>{10a545ba-750f-423a-96b5-07c8d831c285}</Project>
       <Name>Abp.Extended</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
