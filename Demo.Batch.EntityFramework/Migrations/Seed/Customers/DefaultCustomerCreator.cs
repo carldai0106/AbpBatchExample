@@ -106,13 +106,17 @@ namespace Demo.Batch.Migrations.Seed.Customers
 
         private static Customer CreateCustomer(int? tenantId, string nameSurname)
         {
-            return new Customer
+            var entity = new Customer
             {
-                TenantId = tenantId,
                 FirstName = nameSurname.Split(' ')[0],
                 LastName = nameSurname.Split(' ')[1],
                 Age = RandomHelper.GetRandom(18, 60)
             };
+
+            var prop = typeof (Customer).GetProperty("TenantId");
+            prop?.SetValue(entity, tenantId);
+
+            return entity;
         }
 
         public void Create()
@@ -127,8 +131,7 @@ namespace Demo.Batch.Migrations.Seed.Customers
         private void AddIfNotExists(Customer item)
         {
             if (Table.Any(x => x.FirstName == item.FirstName && 
-                        x.LastName == item.LastName && 
-                        x.TenantId == TenantId))
+                        x.LastName == item.LastName))
             {
                 return;
             }

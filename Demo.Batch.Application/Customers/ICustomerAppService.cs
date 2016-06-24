@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Demo.Batch.Application.Customers.Dto;
@@ -9,10 +10,14 @@ namespace Demo.Batch.Application.Customers
     {
         Task<ListResultOutput<CustomerListDto>> GetCustomers();
 
-        Task CreateOrUpdateCustomer();
+        Task BatchCreate(IEnumerable<CreateOrUpdateCustomerInput> input);
 
-        Task BatchDelete();
+        Task<ListResultOutput<CustomerListDto>> GetCustomerByName(string firstName, string lastName);
 
-        Task BatchUpdate();
+        Task BatchDelete(IEnumerable<long> list);
+
+        Task<ListResultOutput<CustomerListDto>> GetCustomerByAge(int assignedAge);
+
+        Task<int> BatchUpdateForCustomerAge(int assignedAge);
     }
 }

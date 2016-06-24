@@ -10,16 +10,8 @@ namespace Demo.Batch.Migrations
     {
         public Configuration()
         {
-            if (DebugHelper.IsDebug)
-            {
-                AutomaticMigrationsEnabled = false;
-                //AutomaticMigrationDataLossAllowed = true;
-            }
-            else
-            {
-                AutomaticMigrationsEnabled = true;
-                AutomaticMigrationDataLossAllowed = true;
-            }
+            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationDataLossAllowed = true;
 
             ContextKey = "Batch";
         }

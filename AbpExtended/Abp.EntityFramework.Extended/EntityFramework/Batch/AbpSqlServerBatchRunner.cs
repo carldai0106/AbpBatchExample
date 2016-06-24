@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.Entity;
@@ -103,43 +104,98 @@ namespace Abp.EntityFramework.Batch
 
                 command.Parameters.Add(parameter);
             }
+          
 
-            var parameters = new[]{
-                    new SqlParameter("@DynamicFilterParam_1", SqlDbType.Int),
-                    new SqlParameter("@DynamicFilterParam_2", SqlDbType.Bit),
-                    new SqlParameter("@DynamicFilterParam_3", SqlDbType.Bit),
-                    new SqlParameter("@DynamicFilterParam_4", SqlDbType.Bit)
-            };
+            var parameters = new List<SqlParameter>();
+            var reg = new Regex(@"([\[?\w +\] ?\.\[?\w+\]?]+(?:\s*\=\s*\@\w+))", RegexOptions.Compiled);
+            var matches = reg.Matches(innerJoinSql);
 
-
-            var abpContext = (dbContext as AbpDbContext);
+            var abpContext = dbContext as AbpDbContext;
             if (abpContext != null)
             {
-                parameters[0].Value = abpContext.AbpSession.TenantId;
-
-                if (abpContext.IsFilterEnabled(AbpDataFilters.MayHaveTenant) ||
+                // Includes TenantId and IsDeleted parameters
+                if (
+                matches.Cast<Match>()
+                    .Any(x => x.Value.Contains("TenantId") && x.Value.Contains("@DynamicFilterParam_1")) &&
+                matches.Cast<Match>()
+                    .Any(x => x.Value.Contains("IsDeleted") && x.Value.Contains("@DynamicFilterParam_3")))
+                {
+                    // TenantId, Accourding to TenantId to filter records
+                    parameters.Add(new SqlParameter("@DynamicFilterParam_1", SqlDbType.Int));
+                    parameters[0].Value = abpContext.AbpSession.TenantId;
+                    // true enabled filter for tenant; false disabled filter for tenant
+                    parameters.Add(new SqlParameter("@DynamicFilterParam_2", SqlDbType.Bit));
+                    if (abpContext.IsFilterEnabled(AbpDataFilters.MayHaveTenant) ||
                     abpContext.IsFilterEnabled(AbpDataFilters.MustHaveTenant))
-                {
-                    parameters[1].Value = DBNull.Value;
-                }
-                else
-                {
-                    parameters[1].Value = 1;
+                    {
+                        parameters[1].Value = DBNull.Value;
+                    }
+                    else
+                    {
+                        parameters[1].Value = 1;
+                    }
+                    // IsDeleted = false, To get does not soft deleted records
+                    parameters.Add(new SqlParameter("@DynamicFilterParam_3", SqlDbType.Bit));
+                    parameters[2].Value = false;
+                    // true enabled SoftDelete; false disabled SoftDelete
+                    parameters.Add(new SqlParameter("@DynamicFilterParam_4", SqlDbType.Bit));
+                    if (abpContext.IsFilterEnabled(AbpDataFilters.SoftDelete))
+                    {
+                        parameters[3].Value = DBNull.Value;
+                    }
+                    else
+                    {
+                        parameters[3].Value = 1;
+                    }
                 }
 
-                parameters[2].Value = false;
-
-                if (abpContext.IsFilterEnabled(AbpDataFilters.SoftDelete))
+                //Includes TenantId parameters
+                if (matches.Cast<Match>()
+                    .Any(x => x.Value.Contains("TenantId") && x.Value.Contains("@DynamicFilterParam_1")) &&
+                    !matches.Cast<Match>()
+                            .Any(x => x.Value.Contains("IsDeleted"))
+                    )
                 {
-                    parameters[3].Value = DBNull.Value;
+                    // TenantId, Accourding to TenantId to filter records
+                    parameters.Add(new SqlParameter("@DynamicFilterParam_1", SqlDbType.Int));
+                    parameters[0].Value = abpContext.AbpSession.TenantId;
+                    // true enabled filter for tenant; false disabled filter for tenant
+                    parameters.Add(new SqlParameter("@DynamicFilterParam_2", SqlDbType.Bit));
+                    if (abpContext.IsFilterEnabled(AbpDataFilters.MayHaveTenant) ||
+                    abpContext.IsFilterEnabled(AbpDataFilters.MustHaveTenant))
+                    {
+                        parameters[1].Value = DBNull.Value;
+                    }
+                    else
+                    {
+                        parameters[1].Value = 1;
+                    }
                 }
-                else
+
+                //Includes IsDeleted parameters
+                if (matches.Cast<Match>()
+                    .Any(x => x.Value.Contains("IsDeleted") && x.Value.Contains("@DynamicFilterParam_1")) &&
+                    !matches.Cast<Match>()
+                            .Any(x => x.Value.Contains("TenantId"))
+                    )
                 {
-                    parameters[3].Value = 1;
+                    // IsDeleted = false, To get does not soft deleted records
+                    parameters.Add(new SqlParameter("@DynamicFilterParam_1", SqlDbType.Bit));
+                    parameters[0].Value = false;
+                    // true enabled SoftDelete; false disabled SoftDelete
+                    parameters.Add(new SqlParameter("@DynamicFilterParam_2", SqlDbType.Bit));
+                    if (abpContext.IsFilterEnabled(AbpDataFilters.SoftDelete))
+                    {
+                        parameters[1].Value = DBNull.Value;
+                    }
+                    else
+                    {
+                        parameters[1].Value = 1;
+                    }
                 }
             }
 
-            command.Parameters.AddRange(parameters);
+            command.Parameters.AddRange(parameters.ToArray());
 
             return innerJoinSql;
         }
@@ -323,7 +379,7 @@ namespace Abp.EntityFramework.Batch
                         var alias = match.Groups["TableAlias"].Value;
 
                         value = value.Replace(alias + ".", "j0.");
-
+                        //value = value.Replace(alias + ".", "");
                         foreach (var objectParameter in selectQuery.Parameters)
                         {
                             string parameterName = "p__update__" + nameCount++;

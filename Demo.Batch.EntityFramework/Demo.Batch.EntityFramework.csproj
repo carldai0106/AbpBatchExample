@@ -100,10 +100,6 @@
     <Compile Include="EntityFramework\BatchDbContext.cs" />
     <Compile Include="EntityFramework\Repositories\BatchRepository.cs" />
     <Compile Include="EntityFramework\Repositories\BatchRepositoryBase.cs" />
-    <Compile Include="Migrations\201604291459157_Add_Customer.cs" />
-    <Compile Include="Migrations\201604291459157_Add_Customer.Designer.cs">
-      <DependentUpon>201604291459157_Add_Customer.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Seed\BatchDbInit.cs" />
     <Compile Include="Migrations\Seed\Customers\DefaultCustomerCreator.cs" />
@@ -127,11 +123,6 @@
       <Project>{a317767a-a3f5-479d-a44a-f36b191741f0}</Project>
       <Name>Demo.Batch.Core</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201604291459157_Add_Customer.resx">
-      <DependentUpon>201604291459157_Add_Customer.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

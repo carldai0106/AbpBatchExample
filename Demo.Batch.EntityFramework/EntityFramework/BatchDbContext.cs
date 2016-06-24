@@ -14,11 +14,11 @@ namespace Demo.Batch.EntityFramework
 
         static BatchDbContext()
         {
-            if (!DebugHelper.IsDebug)
-            {
-                Database.SetInitializer(new CreateDatabaseIfNotExists<BatchDbContext>());
-                Database.SetInitializer(new MigrateDatabaseToLatestVersion<BatchDbContext, Migrations.Configuration>());
-            }
+            Database.SetInitializer(new DropCreateDatabaseAlways<BatchDbContext>());
+
+            //Database.SetInitializer(new CreateDatabaseIfNotExists<BatchDbContext>());
+
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<BatchDbContext, Migrations.Configuration>());
         }
 
         /* Setting "Default" to base class helps us when working migration commands on Package Manager Console.
