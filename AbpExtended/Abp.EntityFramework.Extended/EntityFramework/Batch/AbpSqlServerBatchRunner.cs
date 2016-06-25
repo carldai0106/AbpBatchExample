@@ -129,125 +129,69 @@ namespace Abp.EntityFramework.Batch
 
             var parameters = new List<SqlParameter>();
             var reg = new Regex(@"([\[?\w +\]?\.\[?\w+\]?]+(?:\s*\=\s*\@\w+))", RegexOptions.Compiled);
-            var matches = reg.Matches(innerJoinSql);
+
+            var matches = reg.Matches(innerJoinSql).Cast<Match>().Where(x =>
+                (
+                    x.Value.Contains("TenantId") ||
+                    x.Value.Contains("IsDeleted")
+                )
+                && x.Value.Contains("@DynamicFilterParam_")).ToList();
+
 
             var abpContext = dbContext as AbpDbContext;
+
             if (abpContext != null)
             {
-                // Includes TenantId and IsDeleted parameters
-                if (
-                matches.Cast<Match>()
-                    .Any(x => x.Value.Contains("TenantId") && x.Value.Contains("@DynamicFilterParam_1")) &&
-                matches.Cast<Match>()
-                    .Any(x => x.Value.Contains("IsDeleted") && x.Value.Contains("@DynamicFilterParam_3")))
+                foreach (var item in matches)
                 {
-                    // TenantId, Accourding to TenantId to filter records
-                    parameters.Add(new SqlParameter("@DynamicFilterParam_1", SqlDbType.Int));
-                    parameters[0].Value = abpContext.AbpSession.TenantId;
-                    // true enabled filter for tenant; false disabled filter for tenant
-                    parameters.Add(new SqlParameter("@DynamicFilterParam_2", SqlDbType.Bit));
-                    if (abpContext.IsFilterEnabled(AbpDataFilters.MayHaveTenant) ||
-                    abpContext.IsFilterEnabled(AbpDataFilters.MustHaveTenant))
+                    if (item.Value.Contains("TenantId"))
                     {
-                        parameters[1].Value = DBNull.Value;
-                    }
-                    else
-                    {
-                        parameters[1].Value = 1;
-                    }
-                    // IsDeleted = false, To get does not soft deleted records
-                    parameters.Add(new SqlParameter("@DynamicFilterParam_3", SqlDbType.Bit));
-                    parameters[2].Value = false;
-                    // true enabled SoftDelete; false disabled SoftDelete
-                    parameters.Add(new SqlParameter("@DynamicFilterParam_4", SqlDbType.Bit));
-                    if (abpContext.IsFilterEnabled(AbpDataFilters.SoftDelete))
-                    {
-                        parameters[3].Value = DBNull.Value;
-                    }
-                    else
-                    {
-                        parameters[3].Value = 1;
-                    }
-                }
+                        var dynamicFilterParam = item.Value.Split('=').ElementAt(1).Trim();
+                        // TenantId, Accourding to TenantId to filter records
+                        var para1 = new SqlParameter(dynamicFilterParam, SqlDbType.Int)
+                        {
+                            Value = abpContext.AbpSession.TenantId
+                        };
+                        parameters.Add(para1);
 
-                if (
-                matches.Cast<Match>()
-                    .Any(x => x.Value.Contains("TenantId") && x.Value.Contains("@DynamicFilterParam_3")) &&
-                matches.Cast<Match>()
-                    .Any(x => x.Value.Contains("IsDeleted") && x.Value.Contains("@DynamicFilterParam_1")))
-                {
-                    // IsDeleted = false, To get does not soft deleted records
-                    parameters.Add(new SqlParameter("@DynamicFilterParam_1", SqlDbType.Bit));
-                    parameters[0].Value = false;
-                    // true enabled SoftDelete; false disabled SoftDelete
-                    parameters.Add(new SqlParameter("@DynamicFilterParam_2", SqlDbType.Bit));
-                    if (abpContext.IsFilterEnabled(AbpDataFilters.SoftDelete))
-                    {
-                        parameters[1].Value = DBNull.Value;
-                    }
-                    else
-                    {
-                        parameters[1].Value = 1;
+                        var num = int.Parse(dynamicFilterParam.Split('_').ElementAt(1));
+                        var para2 = new SqlParameter("@DynamicFilterParam_" + (num + 1), SqlDbType.Bit);
+                        // if true enabled tenant filter; if false disabled tenant filter
+                        if (abpContext.IsFilterEnabled(AbpDataFilters.MayHaveTenant) ||
+                            abpContext.IsFilterEnabled(AbpDataFilters.MustHaveTenant))
+                        {
+                            para2.Value = DBNull.Value;
+                        }
+                        else
+                        {
+                            para2.Value = 1;//disabled tenant filter
+                        }
+                        parameters.Add(para2);
                     }
 
-                    // TenantId, Accourding to TenantId to filter records
-                    parameters.Add(new SqlParameter("@DynamicFilterParam_3", SqlDbType.Int));
-                    parameters[2].Value = abpContext.AbpSession.TenantId;
-                    // true enabled filter for tenant; false disabled filter for tenant
-                    parameters.Add(new SqlParameter("@DynamicFilterParam_4", SqlDbType.Bit));
-                    if (abpContext.IsFilterEnabled(AbpDataFilters.MayHaveTenant) ||
-                    abpContext.IsFilterEnabled(AbpDataFilters.MustHaveTenant))
+                    if (item.Value.Contains("IsDeleted"))
                     {
-                        parameters[3].Value = DBNull.Value;
-                    }
-                    else
-                    {
-                        parameters[3].Value = 1;
-                    }
-                }
+                        var dynamicFilterParam = item.Value.Split('=').ElementAt(1).Trim();
+                        // IsDeleted = false, It will get records that do not soft deleted records.
+                        var para1 = new SqlParameter(dynamicFilterParam, SqlDbType.Bit)
+                        {
+                            Value = false
+                        };
+                        parameters.Add(para1);
 
-                //Includes TenantId parameters
-                if (matches.Cast<Match>()
-                    .Any(x => x.Value.Contains("TenantId") && x.Value.Contains("@DynamicFilterParam_1")) &&
-                    !matches.Cast<Match>()
-                            .Any(x => x.Value.Contains("IsDeleted"))
-                    )
-                {
-                    // TenantId, Accourding to TenantId to filter records
-                    parameters.Add(new SqlParameter("@DynamicFilterParam_1", SqlDbType.Int));
-                    parameters[0].Value = abpContext.AbpSession.TenantId;
-                    // true enabled filter for tenant; false disabled filter for tenant
-                    parameters.Add(new SqlParameter("@DynamicFilterParam_2", SqlDbType.Bit));
-                    if (abpContext.IsFilterEnabled(AbpDataFilters.MayHaveTenant) ||
-                    abpContext.IsFilterEnabled(AbpDataFilters.MustHaveTenant))
-                    {
-                        parameters[1].Value = DBNull.Value;
-                    }
-                    else
-                    {
-                        parameters[1].Value = 1;
-                    }
-                }
+                        var num = int.Parse(dynamicFilterParam.Split('_').ElementAt(1));
+                        var para2 = new SqlParameter("@DynamicFilterParam_" + (num + 1), SqlDbType.Bit);
+                        // if true enabled SoftDelete; if false disabled SoftDelete
+                        if (abpContext.IsFilterEnabled(AbpDataFilters.SoftDelete))
+                        {
+                            para2.Value = DBNull.Value;
+                        }
+                        else
+                        {
+                            para2.Value = 1; 
+                        }
 
-                //Includes IsDeleted parameters
-                if (matches.Cast<Match>()
-                    .Any(x => x.Value.Contains("IsDeleted") && x.Value.Contains("@DynamicFilterParam_1")) &&
-                    !matches.Cast<Match>()
-                            .Any(x => x.Value.Contains("TenantId"))
-                    )
-                {
-                    // IsDeleted = false, To get does not soft deleted records
-                    parameters.Add(new SqlParameter("@DynamicFilterParam_1", SqlDbType.Bit));
-                    parameters[0].Value = false;
-                    // true enabled SoftDelete; false disabled SoftDelete
-                    parameters.Add(new SqlParameter("@DynamicFilterParam_2", SqlDbType.Bit));
-                    if (abpContext.IsFilterEnabled(AbpDataFilters.SoftDelete))
-                    {
-                        parameters[1].Value = DBNull.Value;
-                    }
-                    else
-                    {
-                        parameters[1].Value = 1;
+                        parameters.Add(para2);
                     }
                 }
             }
