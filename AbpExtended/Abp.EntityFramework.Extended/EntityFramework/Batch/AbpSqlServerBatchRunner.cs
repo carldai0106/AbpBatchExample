@@ -170,6 +170,42 @@ namespace Abp.EntityFramework.Batch
                     }
                 }
 
+                if (
+                matches.Cast<Match>()
+                    .Any(x => x.Value.Contains("TenantId") && x.Value.Contains("@DynamicFilterParam_3")) &&
+                matches.Cast<Match>()
+                    .Any(x => x.Value.Contains("IsDeleted") && x.Value.Contains("@DynamicFilterParam_1")))
+                {
+                    // IsDeleted = false, To get does not soft deleted records
+                    parameters.Add(new SqlParameter("@DynamicFilterParam_1", SqlDbType.Bit));
+                    parameters[0].Value = false;
+                    // true enabled SoftDelete; false disabled SoftDelete
+                    parameters.Add(new SqlParameter("@DynamicFilterParam_2", SqlDbType.Bit));
+                    if (abpContext.IsFilterEnabled(AbpDataFilters.SoftDelete))
+                    {
+                        parameters[1].Value = DBNull.Value;
+                    }
+                    else
+                    {
+                        parameters[1].Value = 1;
+                    }
+
+                    // TenantId, Accourding to TenantId to filter records
+                    parameters.Add(new SqlParameter("@DynamicFilterParam_3", SqlDbType.Int));
+                    parameters[2].Value = abpContext.AbpSession.TenantId;
+                    // true enabled filter for tenant; false disabled filter for tenant
+                    parameters.Add(new SqlParameter("@DynamicFilterParam_4", SqlDbType.Bit));
+                    if (abpContext.IsFilterEnabled(AbpDataFilters.MayHaveTenant) ||
+                    abpContext.IsFilterEnabled(AbpDataFilters.MustHaveTenant))
+                    {
+                        parameters[3].Value = DBNull.Value;
+                    }
+                    else
+                    {
+                        parameters[3].Value = 1;
+                    }
+                }
+
                 //Includes TenantId parameters
                 if (matches.Cast<Match>()
                     .Any(x => x.Value.Contains("TenantId") && x.Value.Contains("@DynamicFilterParam_1")) &&
