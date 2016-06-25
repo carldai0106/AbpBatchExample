@@ -11,7 +11,7 @@ namespace Demo.Batch.Customers
         //Entity<long>,
         //IMayHaveTenant
     {
-        public const int NameMaxLength = 16;
+        public const int NameMaxLength = 32;
 
         [StringLength(NameMaxLength)]
         public string FirstName { get; set; }

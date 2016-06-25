@@ -14,10 +14,7 @@ namespace Demo.Batch.EntityFramework
 
         static BatchDbContext()
         {
-            Database.SetInitializer(new DropCreateDatabaseAlways<BatchDbContext>());
-
-            //Database.SetInitializer(new CreateDatabaseIfNotExists<BatchDbContext>());
-
+            Database.SetInitializer(new CreateDatabaseIfNotExists<BatchDbContext>());
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<BatchDbContext, Migrations.Configuration>());
         }
 

@@ -48,7 +48,7 @@ namespace Demo.Batch.Tests.Customers
                 {
                     FirstName = "Perry",
                     LastName = "Yu",
-                    Age = 28
+                    Age = 31
                 }
             };
 
@@ -57,6 +57,7 @@ namespace Demo.Batch.Tests.Customers
             rs.Items.Count.ShouldBe(count + list.Count);
         }
 
+        //Notice : Run this method before you must run Batch Insert method.
         [Fact, TestPriority(3)]
         public async Task BatchDelete_Test()
         {
@@ -75,6 +76,15 @@ namespace Demo.Batch.Tests.Customers
             var count = rs.Items.Count(x => list.Contains(x.Id));
 
             count.ShouldBe(0);
+        }
+        
+        [Fact, TestPriority(5)]
+        public async Task BatchDelete_Random_ID_Test()
+        {
+            var rs = await _service.GetCustomers();
+            var ids = rs.Items.Select(x => x.Id).OrderBy(x => Abp.RandomHelper.GetRandom(1, 100));
+            var list = ids.Take(20);
+            await _service.BatchDelete(list);
         }
 
         [Fact, TestPriority(4)]
