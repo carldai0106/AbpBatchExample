@@ -27,21 +27,42 @@ namespace Abp.EntityFramework.Batch
     public class AbpSqlServerBatchRunner<TDbContext> :
         IAbpBatchRunner<TDbContext> where TDbContext : DbContext
     {
-        public Task<int> DeleteAsync<TEntity>(
-           TDbContext dbContext, EntityMap entityMap,
-           ObjectQuery<TEntity> query) where TEntity : class
+        public int Update<TEntity>(
+            TDbContext dbContext,
+            EntityMap entityMap,
+            ObjectQuery<TEntity> query,
+            Expression<Func<TEntity, TEntity>> updateExpression
+        ) where TEntity : class
         {
-            return InnerDelete(dbContext, entityMap, query, true);
+            return InnerUpdate(dbContext, entityMap, query, updateExpression).Result;
         }
 
         public Task<int> UpdateAsync<TEntity>(
-                                               TDbContext dbContext,
-                                               EntityMap entityMap,
-                                               ObjectQuery<TEntity> query,
-                                               Expression<Func<TEntity, TEntity>> updateExpression
-                                           ) where TEntity : class
+               TDbContext dbContext,
+               EntityMap entityMap,
+               ObjectQuery<TEntity> query,
+               Expression<Func<TEntity, TEntity>> updateExpression
+           ) where TEntity : class
         {
             return InnerUpdate(dbContext, entityMap, query, updateExpression, true);
+        }
+
+        public int Delete<TEntity>(
+               TDbContext dbContext,
+               EntityMap entityMap,
+               ObjectQuery<TEntity> query
+           ) where TEntity : class
+        {
+            return InnerDelete(dbContext, entityMap, query).Result;
+        }
+
+        public Task<int> DeleteAsync<TEntity>(
+               TDbContext dbContext,
+               EntityMap entityMap,
+               ObjectQuery<TEntity> query
+            ) where TEntity : class
+        {
+            return InnerDelete(dbContext, entityMap, query, true);
         }
 
         private static Tuple<DbConnection, DbTransaction> GetStore(ObjectContext objContext)
@@ -104,10 +125,10 @@ namespace Abp.EntityFramework.Batch
 
                 command.Parameters.Add(parameter);
             }
-          
+
 
             var parameters = new List<SqlParameter>();
-            var reg = new Regex(@"([\[?\w +\] ?\.\[?\w+\]?]+(?:\s*\=\s*\@\w+))", RegexOptions.Compiled);
+            var reg = new Regex(@"([\[?\w +\]?\.\[?\w+\]?]+(?:\s*\=\s*\@\w+))", RegexOptions.Compiled);
             var matches = reg.Matches(innerJoinSql);
 
             var abpContext = dbContext as AbpDbContext;

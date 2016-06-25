@@ -35,7 +35,7 @@ namespace Abp.Messaging.RabbitMq
             //declare a queue
             channel.QueueDeclare(queue: config.QueueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
 
-            //bind quere to exchange
+            //bind queue to exchange
             channel.QueueBind(queue: config.QueueName, exchange: config.ExchangeName, routingKey: config.RoutingKey);
 
             var consumer = new EventingBasicConsumer(channel);

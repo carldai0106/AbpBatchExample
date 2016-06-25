@@ -139,6 +139,7 @@
     <Compile Include="Runtime\Security\Md5Cipher.cs" />
     <Compile Include="Runtime\Security\SimpleStringCipher.cs" />
     <Compile Include="Text\RegularExpressions\RegexUtils.cs" />
+    <Compile Include="Timing\DateTimeExtensions.cs" />
     <Compile Include="Utils\Dynamic\DynamicDictionary.cs" />
   </ItemGroup>
   <ItemGroup>

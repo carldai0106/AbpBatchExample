@@ -23,7 +23,7 @@ namespace Abp
                         "Abp.Localization.Sources.JsonAbpExtended"
                         )
                     )
-                );
+                );            
         }
 
         public override void Initialize()

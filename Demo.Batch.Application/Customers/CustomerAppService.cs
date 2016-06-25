@@ -65,9 +65,11 @@ namespace Demo.Batch.Application.Customers
 
         public async Task<int> BatchUpdateForCustomerAge(int assignedAge)
         {
-            return await _repository.BatchUpdateAsync(x => x.Age < assignedAge, x2 => new Customer
+            return await _repository.BatchUpdateAsync(x => x.Age < assignedAge, u => new Customer
             {
-                Age = x2.Age + (assignedAge - x2.Age)
+                Age = u.Age + (assignedAge - u.Age),
+                FirstName = u.FirstName + " FirstName",
+                LastName = u.LastName + " LastName"
             });
         }
        

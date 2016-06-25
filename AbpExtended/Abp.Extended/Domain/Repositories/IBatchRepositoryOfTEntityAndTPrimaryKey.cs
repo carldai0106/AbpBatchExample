@@ -10,12 +10,16 @@ namespace Abp.Domain.Repositories
         IRepository<TEntity, TPrimaryKey> where TEntity : 
         class, IEntity<TPrimaryKey>
     {
+        IEnumerable<TEntity> BatchInsert(IEnumerable<TEntity> entities);
+
         /// <summary>
         /// Batch insert, Notice : You can use Effort.EF6 to test
         /// </summary>
         /// <param name="entities">entities</param>
         /// <returns></returns>
-        Task<IEnumerable<TEntity>> BatchInsertAsync(IEnumerable<TEntity> entities);       
+        Task<IEnumerable<TEntity>> BatchInsertAsync(IEnumerable<TEntity> entities);
+
+        int BatchUpdate(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, TEntity>> updateExpression);
 
         /// <summary>
         /// Batch update, Notice : You can not use Effort.EF6 to test, you must use a real database.
@@ -24,6 +28,8 @@ namespace Abp.Domain.Repositories
         /// <param name="updateExpression">update expression</param>
         /// <returns></returns>
         Task<int> BatchUpdateAsync(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, TEntity>> updateExpression);
+
+        int BatchDelete(Expression<Func<TEntity, bool>> predicate);
 
         /// <summary>
         /// Batch delete, Notice : You can not use Effort.EF6 to test, you must use a real database.

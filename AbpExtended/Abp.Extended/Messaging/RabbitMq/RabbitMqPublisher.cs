@@ -46,7 +46,7 @@ namespace Abp.Messaging.RabbitMq
                 exchange: config.ExchangeName,
                 routingKey: config.RoutingKey,
                 basicProperties: _properties,
-                body: msg);            
+                body: msg);                  
         }
 
         protected override void Dispose(bool disposing)
